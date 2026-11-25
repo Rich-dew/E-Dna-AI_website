@@ -49,9 +49,9 @@ export function TaxonomyTable({ samples, assignments }: TaxonomyTableProps) {
   }
 
   return (
-    <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] overflow-hidden">
-      <div className="p-4 sm:p-5 border-b border-[#E3E1D8] dark:border-[#1C3432] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-[#F2F1EA] dark:bg-[#0A1615]">
+    <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#0F4C4A] dark:border-t-[#7ED6B5] bg-white dark:bg-[#0B1B1A] overflow-hidden surface-card">
+      <div className="p-4 sm:p-5 border-b border-[#E3E0D5] dark:border-[#1D3A37] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-[#EFECE3] dark:bg-[#071312]">
           {(
             [
               { id: 'all', label: `All (${assignments.length})` },
@@ -75,8 +75,8 @@ export function TaxonomyTable({ samples, assignments }: TaxonomyTableProps) {
               onClick={() => setStatusFilter(tab.id)}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
                 statusFilter === tab.id
-                  ? 'bg-white dark:bg-[#16302E] text-[#0F4C4A] dark:text-[#FAF9F5] shadow-xs'
-                  : 'text-[#4A6361] dark:text-[#9DB6B3] hover:text-[#0F2423] dark:hover:text-white'
+                  ? 'bg-white dark:bg-[#132C2A] text-[#0F4C4A] dark:text-[#FAF9F5] shadow-xs'
+                  : 'text-[#435E5B] dark:text-[#9DBAB6] hover:text-[#0F2423] dark:hover:text-white'
               }`}
             >
               {tab.label}
@@ -89,7 +89,7 @@ export function TaxonomyTable({ samples, assignments }: TaxonomyTableProps) {
             aria-label="Filter by sampling site"
             value={sampleFilter}
             onChange={(e) => setSampleFilter(e.target.value)}
-            className="px-3 py-2 text-xs rounded-lg border border-[#D4D1C7] dark:border-[#244240] bg-[#FAF9F5] dark:bg-[#0A1615]"
+            className="px-3 py-2 text-xs rounded-lg border border-[#D4D1C7] dark:border-[#244643] bg-[#FAF9F5] dark:bg-[#071312]"
           >
             <option value="all">All sites</option>
             {samples.map((s) => (
@@ -107,7 +107,7 @@ export function TaxonomyTable({ samples, assignments }: TaxonomyTableProps) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search species, phylum, OTU..."
-              className="pl-8 pr-3 py-2 text-xs rounded-lg border border-[#D4D1C7] dark:border-[#244240] bg-[#FAF9F5] dark:bg-[#0A1615] w-56"
+              className="pl-8 pr-3 py-2 text-xs rounded-lg border border-[#D4D1C7] dark:border-[#244643] bg-[#FAF9F5] dark:bg-[#071312] w-56"
             />
           </div>
         </div>
@@ -121,7 +121,7 @@ export function TaxonomyTable({ samples, assignments }: TaxonomyTableProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-[#E3E1D8] dark:border-[#1C3432] bg-[#FAF9F5] dark:bg-[#0B1716] text-[#4A6361] dark:text-[#9DB6B3]">
+              <tr className="border-b border-[#E3E0D5] dark:border-[#1D3A37] bg-[#F7F6F0] dark:bg-[#081514] text-[#435E5B] dark:text-[#9DBAB6]">
                 <th className="py-3 px-4 font-medium">Cluster</th>
                 <th className="py-3 px-3 font-medium">Site</th>
                 <th className="py-3 px-3 font-medium">Lineage (Kingdom → Family)</th>
@@ -133,7 +133,7 @@ export function TaxonomyTable({ samples, assignments }: TaxonomyTableProps) {
                 <th className="py-3 px-3 font-medium text-right">Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#ECEAE2] dark:divide-[#182E2C]">
+            <tbody className="divide-y divide-[#ECEAE2] dark:divide-[#152D2B]">
               {filtered.map((a) => {
                 const site = sampleMap.get(a.sampleId)?.siteName ?? a.sampleId;
                 const expanded = expandedId === a.id;
@@ -148,7 +148,7 @@ export function TaxonomyTable({ samples, assignments }: TaxonomyTableProps) {
 
                 return (
                   <React.Fragment key={a.id}>
-                    <tr className="hover:bg-[#FAF9F5] dark:hover:bg-[#132625]/60">
+                    <tr className="hover:bg-[#F7F6F0] dark:hover:bg-[#102423] transition-colors">
                       <td className="py-3 px-4 font-mono tabular-nums font-medium">{a.clusterId}</td>
                       <td className="py-3 px-3 max-w-[140px] truncate">{site}</td>
                       <td className="py-3 px-3 text-[#4A6361] dark:text-[#9DB6B3]">

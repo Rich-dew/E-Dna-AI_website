@@ -111,11 +111,11 @@ export function AiSummaryAndReports({
   return (
     <div className="space-y-6">
       {/* Export Reports Toolbar */}
-      <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5">
+      <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#5BB6E8] bg-white dark:bg-[#0B1B1A] p-5 surface-card">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h3 className="font-display text-base font-semibold">Export Research Deliverables</h3>
-            <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5">
+            <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5">
               Download structured taxonomy tables, full JSON datasets, or a publication-ready PDF
               report containing diversity tables and vector abundance charts.
             </p>
@@ -128,7 +128,7 @@ export function AiSummaryAndReports({
                 exportAssignmentsCsv(project, samples, assignments);
                 pushToast({ type: 'success', title: 'CSV exported' });
               }}
-              className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244240] hover:bg-[#EFECE3] dark:hover:bg-[#142625] disabled:opacity-40 whitespace-nowrap"
+              className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244643] hover:bg-[#EFECE3] dark:hover:bg-[#122927] disabled:opacity-40 whitespace-nowrap transition-colors"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
               Export CSV
@@ -140,7 +140,7 @@ export function AiSummaryAndReports({
                 exportProjectJson(project, samples, assignments, alphaMetrics, summary);
                 pushToast({ type: 'success', title: 'JSON exported' });
               }}
-              className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244240] hover:bg-[#EFECE3] dark:hover:bg-[#142625] disabled:opacity-40 whitespace-nowrap"
+              className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244643] hover:bg-[#EFECE3] dark:hover:bg-[#122927] disabled:opacity-40 whitespace-nowrap transition-colors"
             >
               <FileJson className="w-3.5 h-3.5" />
               Export JSON
@@ -152,7 +152,7 @@ export function AiSummaryAndReports({
                 exportProjectPdfReport(project, samples, assignments, alphaMetrics, summary);
                 pushToast({ type: 'success', title: 'PDF report downloaded' });
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-[#0F4C4A] text-[#FAF9F5] hover:bg-[#16605D] dark:bg-[#1F8A72] dark:hover:bg-[#27A085] disabled:opacity-40 whitespace-nowrap"
+              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-gradient-to-r from-[#0F4C4A] to-[#1F8A72] text-[#FAF9F5] hover:from-[#125A58] hover:to-[#249A80] shadow-xs disabled:opacity-40 whitespace-nowrap transition-all"
             >
               <Download className="w-3.5 h-3.5" />
               Export PDF Report
@@ -162,13 +162,13 @@ export function AiSummaryAndReports({
       </section>
 
       {/* Gemini Ecological Summary */}
-      <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5 sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#ECEAE2] dark:border-[#182E2C]">
+      <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#1F8A72] bg-white dark:bg-[#0B1B1A] p-5 sm:p-6 surface-card">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#ECEAE2] dark:border-[#17312E]">
           <div>
             <h3 className="font-display text-base font-semibold">
               Plain-Language Ecological Summary (Gemini)
             </h3>
-            <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5">
+            <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5">
               Synthesizes biodiversity trends, novel candidate signals, reference-database gaps, and{' '}
               {project.markerGene} marker bias.
             </p>
@@ -177,7 +177,7 @@ export function AiSummaryAndReports({
             type="button"
             disabled={generating || assignments.length === 0}
             onClick={handleGenerateSummary}
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-[#0F4C4A] text-[#FAF9F5] hover:bg-[#16605D] dark:bg-[#1F8A72] dark:hover:bg-[#27A085] disabled:opacity-50 whitespace-nowrap"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-gradient-to-r from-[#0F4C4A] to-[#1F8A72] text-[#FAF9F5] hover:from-[#125A58] hover:to-[#249A80] shadow-xs disabled:opacity-50 whitespace-nowrap transition-all"
           >
             <Sparkles className="w-3.5 h-3.5" />
             {generating
@@ -237,7 +237,7 @@ export function AiSummaryAndReports({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
-                <div className="p-4 rounded-lg border border-[#E3E1D8] dark:border-[#1C3432] bg-[#FAF9F5] dark:bg-[#0B1716]">
+                <div className="p-4 rounded-lg border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#F2B84B] bg-[#FAF9F5] dark:bg-[#071312]">
                   <h4 className="font-display text-xs font-semibold text-[#A66A08] dark:text-[#F2B84B] mb-2">
                     Methodological Caveats &amp; Bias Notes
                   </h4>
@@ -248,7 +248,7 @@ export function AiSummaryAndReports({
                   </ul>
                 </div>
 
-                <div className="p-4 rounded-lg border border-[#E3E1D8] dark:border-[#1C3432] bg-[#FAF9F5] dark:bg-[#0B1716]">
+                <div className="p-4 rounded-lg border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#1F8A72] bg-[#FAF9F5] dark:bg-[#071312]">
                   <h4 className="font-display text-xs font-semibold text-[#0F4C4A] dark:text-[#7ED6B5] mb-2">
                     Recommended Validation Steps
                   </h4>

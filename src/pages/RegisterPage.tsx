@@ -88,8 +88,9 @@ export function RegisterPage() {
           : 'bg-[#1F8A72]';
 
   return (
-    <div className="min-h-screen bg-[#FAF9F5] dark:bg-[#091414] text-[#0F2423] dark:text-[#F2F5F3] flex flex-col">
-      <header className="max-w-7xl w-full mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div className="min-h-screen bg-[#FAF9F5] dark:bg-[#061111] bg-ocean-wash text-[#0F2423] dark:text-[#EEF4F2] flex flex-col relative">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-bio-grid opacity-55" />
+      <header className="relative max-w-7xl w-full mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link to="/" aria-label="TaxaTrace Home">
           <Logo size="sm" showWordmark />
         </Link>
@@ -97,20 +98,22 @@ export function RegisterPage() {
           type="button"
           onClick={toggleTheme}
           aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          className="p-2 rounded-lg text-[#3F5957] dark:text-[#9DB6B3] hover:bg-[#ECEAE2] dark:hover:bg-[#142625]"
+          className="p-2 rounded-lg text-[#3B5755] dark:text-[#9DBAB6] hover:bg-[#ECE9DE] dark:hover:bg-[#122927]"
         >
           {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4 py-8">
-        <div className="w-full max-w-xl rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-6 sm:p-8">
+      <main className="relative flex-1 flex items-center justify-center px-4 py-8">
+        <div className="w-full max-w-xl rounded-2xl overflow-hidden border border-[#DEDBD0] dark:border-[#1D3A37] bg-white/95 dark:bg-[#0B1B1A]/95 backdrop-blur-sm surface-card">
+          <div className="h-1 w-full bg-gradient-to-r from-[#0F4C4A] via-[#1F8A72] to-[#7ED6B5]" />
+          <div className="p-6 sm:p-8">
           <div className="mb-6">
             <Logo size="md" showWordmark showTagline />
-            <h1 className="font-display text-2xl font-bold mt-5 text-[#0F2423] dark:text-[#FAF9F5]">
+            <h1 className="font-display text-2xl font-bold mt-5 text-[#0B2322] dark:text-[#FAF9F5]">
               Create your researcher account
             </h1>
-            <p className="text-sm text-[#4A6361] dark:text-[#9DB6B3] mt-1">
+            <p className="text-sm text-[#435E5B] dark:text-[#9DBAB6] mt-1">
               Email verification is required before uploading datasets or running pipelines.
             </p>
           </div>
@@ -327,13 +330,13 @@ export function RegisterPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-2.5 px-4 text-sm font-semibold rounded-lg bg-[#0F4C4A] text-[#FAF9F5] hover:bg-[#16605D] dark:bg-[#1F8A72] dark:hover:bg-[#27A085] disabled:opacity-50 transition-colors"
+              className="w-full py-2.5 px-4 text-sm font-semibold rounded-lg bg-gradient-to-r from-[#0F4C4A] to-[#176961] text-[#FAF9F5] shadow-sm shadow-[#0F4C4A]/20 hover:from-[#145E5B] hover:to-[#1F8A72] dark:from-[#1F8A72] dark:to-[#27A085] disabled:opacity-50"
             >
               {submitting ? 'Creating account...' : 'Create Account'}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-[#4A6361] dark:text-[#9DB6B3]">
+          <p className="mt-6 text-center text-sm text-[#435E5B] dark:text-[#9DBAB6]">
             Already have an account?{' '}
             <Link
               to="/login"
@@ -342,6 +345,7 @@ export function RegisterPage() {
               Sign in
             </Link>
           </p>
+          </div>
         </div>
       </main>
     </div>

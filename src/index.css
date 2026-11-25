@@ -20,15 +20,118 @@
   html {
     font-family: var(--font-sans);
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #FAF9F5;
+    color: #0F2423;
+  }
+
+  .dark body {
+    background-color: #061111;
+    color: #EEF4F2;
   }
 
   h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
   }
+
+  button:not(:disabled),
+  a,
+  select {
+    transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+    transition-duration: 180ms;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :focus-visible {
+    outline: 2px solid #1F8A72;
+    outline-offset: 2px;
+  }
+
+  .dark :focus-visible {
+    outline-color: #7ED6B5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* Oceanic & botanical ambient stage backdrop (subtle, restrained 60-30-10) */
+.bg-ocean-wash {
+  background-image:
+    radial-gradient(ellipse 68% 48% at 14% 0%, rgba(126, 214, 181, 0.22), transparent 64%),
+    radial-gradient(ellipse 52% 42% at 88% 8%, rgba(91, 182, 232, 0.14), transparent 60%),
+    radial-gradient(ellipse 40% 34% at 74% 85%, rgba(242, 184, 75, 0.08), transparent 65%);
+}
+
+.dark .bg-ocean-wash {
+  background-image:
+    radial-gradient(ellipse 68% 48% at 14% 0%, rgba(31, 138, 114, 0.2), transparent 64%),
+    radial-gradient(ellipse 52% 42% at 88% 8%, rgba(91, 182, 232, 0.1), transparent 60%),
+    radial-gradient(ellipse 44% 36% at 60% 95%, rgba(15, 76, 74, 0.22), transparent 65%);
+}
+
+/* Precision bathymetric dot grid for hero & auth backdrop */
+.bg-bio-grid {
+  background-image: radial-gradient(rgba(15, 76, 74, 0.09) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .bg-bio-grid {
+  background-image: radial-gradient(rgba(126, 214, 181, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Single-elevation crisp surface card */
+.surface-card {
+  box-shadow:
+    0 1px 2px rgba(15, 76, 74, 0.04),
+    0 10px 26px -14px rgba(15, 76, 74, 0.11);
+}
+
+.dark .surface-card {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 14px 30px -16px rgba(0, 0, 0, 0.55);
+}
+
+/* Deep-teal editorial feature band */
+.bg-deep-reef {
+  background-color: #0F4C4A;
+  background-image:
+    radial-gradient(ellipse 60% 80% at 88% 15%, rgba(126, 214, 181, 0.22), transparent 65%),
+    radial-gradient(ellipse 50% 70% at 12% 95%, rgba(91, 182, 232, 0.16), transparent 65%);
+}
+
+/* Subtle custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(15, 76, 74, 0.18);
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(126, 214, 181, 0.2);
 }
 
 /* Leaflet map dark mode & clean popup calibration */
@@ -43,7 +146,7 @@
 
 .dark .leaflet-popup-content-wrapper,
 .dark .leaflet-popup-tip {
-  background-color: #0F1F1E;
-  color: #F2F5F3;
-  border: 1px solid #1C3432;
+  background-color: #0B1B1A;
+  color: #EEF4F2;
+  border: 1px solid #1D3A37;
 }

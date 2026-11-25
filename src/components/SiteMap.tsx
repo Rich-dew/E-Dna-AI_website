@@ -122,16 +122,16 @@ export function SiteMap({ samples, alphaMetrics }: SiteMapProps) {
   }
 
   return (
-    <div className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] overflow-hidden">
-      <div className="px-5 py-4 border-b border-[#E3E1D8] dark:border-[#1C3432] flex flex-wrap items-center justify-between gap-3">
+    <div className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#5BB6E8] bg-white dark:bg-[#0B1B1A] overflow-hidden surface-card">
+      <div className="px-5 py-4 border-b border-[#E3E0D5] dark:border-[#1D3A37] flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="font-display text-base font-semibold">Spatial Diversity Site Map</h3>
-          <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5">
+          <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5">
             Marker radius scales with taxonomic richness. Click any site for Shannon, Simpson, and
             novel-taxon metrics.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-4 text-xs text-[#4A6361] dark:text-[#9DB6B3]">
+        <div className="flex flex-wrap items-center gap-4 text-xs text-[#435E5B] dark:text-[#9DBAB6]">
           <span className="inline-flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-[#0F4C4A]" />
             High H&apos; (&ge;1.6)
@@ -150,7 +150,7 @@ export function SiteMap({ samples, alphaMetrics }: SiteMapProps) {
       <div
         ref={containerRef}
         data-testid="leaflet-site-map"
-        className="w-full h-[420px] bg-[#E8EFEA] dark:bg-[#0A1615]"
+        className="w-full h-[420px] bg-[#E8EFEA] dark:bg-[#071312]"
       />
     </div>
   );

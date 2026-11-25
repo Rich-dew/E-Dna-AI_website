@@ -21,17 +21,31 @@ import type {
   TaxonomicAssignment,
 } from '../types/edna';
 import { EmptyState } from './StateBlocks';
+import { useTheme } from '../context/ThemeContext';
 
-const CHART_PALETTE = [
+const CHART_PALETTE_LIGHT = [
   '#0F4C4A',
   '#1F8A72',
+  '#5BB6E8',
+  '#F2B84B',
+  '#E8725A',
   '#3D9B84',
-  '#E09F3E',
-  '#D9644A',
-  '#4A9ECA',
-  '#3A7CA5',
-  '#7D5A50',
+  '#2D6A8E',
+  '#B5654D',
 ];
+
+const CHART_PALETTE_DARK = [
+  '#7ED6B5',
+  '#28A387',
+  '#5BB6E8',
+  '#F2B84B',
+  '#E8725A',
+  '#4CC4A4',
+  '#7CC4EE',
+  '#D9896C',
+];
+
+const LIGHT_FILLS = new Set(['#7ED6B5', '#F2B84B', '#7CC4EE']);
 
 interface BiodiversityVisualsProps {
   samples: SampleMetadata[];
@@ -57,6 +71,7 @@ function buildProportionalTreemap(
   w: number,
   h: number,
   total: number,
+  palette: string[],
   startIdx: number = 0,
 ): TreemapRect[] {
   if (items.length === 0 || w <= 0 || h <= 0) return [];
@@ -70,7 +85,7 @@ function buildProportionalTreemap(
         y,
         w,
         h,
-        color: CHART_PALETTE[startIdx % CHART_PALETTE.length],
+        color: palette[startIdx % palette.length],
       },
     ];
   }
@@ -89,14 +104,14 @@ function buildProportionalTreemap(
   if (w >= h) {
     const leftW = w * leftRatio;
     return [
-      ...buildProportionalTreemap(leftItems, x, y, leftW, h, total, startIdx),
-      ...buildProportionalTreemap(rightItems, x + leftW, y, w - leftW, h, total, startIdx + splitIdx),
+      ...buildProportionalTreemap(leftItems, x, y, leftW, h, total, palette, startIdx),
+      ...buildProportionalTreemap(rightItems, x + leftW, y, w - leftW, h, total, palette, startIdx + splitIdx),
     ];
   }
   const topH = h * leftRatio;
   return [
-    ...buildProportionalTreemap(leftItems, x, y, w, topH, total, startIdx),
-    ...buildProportionalTreemap(rightItems, x, y + topH, w, h - topH, total, startIdx + splitIdx),
+    ...buildProportionalTreemap(leftItems, x, y, w, topH, total, palette, startIdx),
+    ...buildProportionalTreemap(rightItems, x, y + topH, w, h - topH, total, palette, startIdx + splitIdx),
   ];
 }
 
@@ -111,6 +126,8 @@ export function BiodiversityVisuals({
   assignments,
   alphaMetrics,
 }: BiodiversityVisualsProps) {
+  const { theme } = useTheme();
+  const palette = theme === 'dark' ? CHART_PALETTE_DARK : CHART_PALETTE_LIGHT;
   const [betaMetric, setBetaMetric] = useState<'bray_curtis' | 'jaccard'>('bray_curtis');
 
   const betaResult = useMemo(
@@ -175,8 +192,8 @@ export function BiodiversityVisuals({
       .slice(0, 12)
       .map(([name, size]) => ({ name, size }));
     const total = items.reduce((sum, it) => sum + it.size, 0);
-    return buildProportionalTreemap(items, 0, 0, 600, 290, total);
-  }, [assignments]);
+    return buildProportionalTreemap(items, 0, 0, 600, 290, total, palette);
+  }, [assignments, palette]);
   const [hoveredTile, setHoveredTile] = useState<TreemapRect | null>(null);
 
   // Abundance Heatmap (Top 10 taxa x samples)
@@ -226,12 +243,12 @@ export function BiodiversityVisuals({
   return (
     <div className="space-y-6">
       {/* 1. Alpha Diversity Site Comparison Table */}
-      <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E3E1D8] dark:border-[#1C3432]">
+      <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#0F4C4A] dark:border-t-[#7ED6B5] bg-white dark:bg-[#0B1B1A] overflow-hidden surface-card">
+        <div className="px-5 py-4 border-b border-[#E3E0D5] dark:border-[#1D3A37]">
           <h3 className="font-display text-base font-semibold">
             Alpha Diversity Site Comparison
           </h3>
-          <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5">
+          <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5">
             Observed richness (S), Shannon entropy (H&apos;), Simpson diversity (1-D), Pielou
             evenness (J&apos;), and bias-corrected Chao1 estimator.
           </p>
@@ -239,7 +256,7 @@ export function BiodiversityVisuals({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
-              <tr className="border-b border-[#E3E1D8] dark:border-[#1C3432] text-xs text-[#4A6361] dark:text-[#9DB6B3] bg-[#FAF9F5] dark:bg-[#0B1716]">
+              <tr className="border-b border-[#E3E0D5] dark:border-[#1D3A37] text-xs text-[#435E5B] dark:text-[#9DBAB6] bg-[#F7F6F0] dark:bg-[#081514]">
                 <th className="py-3 px-4 font-medium">Sampling Site</th>
                 <th className="py-3 px-4 font-medium text-right">Reads</th>
                 <th className="py-3 px-4 font-medium text-right">Richness (S)</th>
@@ -250,9 +267,9 @@ export function BiodiversityVisuals({
                 <th className="py-3 px-4 font-medium text-right">Novel Flags</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#ECEAE2] dark:divide-[#182E2C]">
+            <tbody className="divide-y divide-[#ECEAE2] dark:divide-[#152D2B]">
               {alphaMetrics.map((m) => (
-                <tr key={m.sampleId} className="hover:bg-[#FAF9F5] dark:hover:bg-[#132625]/60">
+                <tr key={m.sampleId} className="hover:bg-[#F7F6F0] dark:hover:bg-[#102423] transition-colors">
                   <td className="py-3 px-4 font-medium">{m.siteName}</td>
                   <td className="py-3 px-4 text-right font-mono tabular-nums">
                     {m.totalReads.toLocaleString()}
@@ -290,11 +307,11 @@ export function BiodiversityVisuals({
 
       {/* 2. Taxonomy Treemap & Stacked Bar by Sample */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5">
+        <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#1F8A72] bg-white dark:bg-[#0B1B1A] p-5 surface-card">
           <div className="flex items-start justify-between gap-2 mb-4">
             <div>
               <h3 className="font-display text-base font-semibold">Taxonomic Composition Treemap</h3>
-              <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5">
+              <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5">
                 Relative read proportion across detected species and unclassified novel candidates.
               </p>
             </div>
@@ -337,7 +354,7 @@ export function BiodiversityVisuals({
                       <text
                         x={rect.x + 10}
                         y={rect.y + 20}
-                        fill="#FAF9F5"
+                        fill={LIGHT_FILLS.has(rect.color) ? '#0B201F' : '#FAF9F5'}
                         fontSize={12}
                         fontWeight={600}
                         fontFamily="Inter, sans-serif"
@@ -349,7 +366,11 @@ export function BiodiversityVisuals({
                       <text
                         x={rect.x + 10}
                         y={rect.y + 36}
-                        fill="rgba(250,249,245,0.85)"
+                        fill={
+                          LIGHT_FILLS.has(rect.color)
+                            ? 'rgba(11,32,31,0.78)'
+                            : 'rgba(250,249,245,0.85)'
+                        }
                         fontSize={11}
                         fontFamily="JetBrains Mono, monospace"
                       >
@@ -363,9 +384,9 @@ export function BiodiversityVisuals({
           </div>
         </section>
 
-        <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5">
+        <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#5BB6E8] bg-white dark:bg-[#0B1B1A] p-5 surface-card">
           <h3 className="font-display text-base font-semibold">Stacked Abundance by Sample</h3>
-          <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5 mb-4">
+          <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5 mb-4">
             Distribution of top detected taxa and novel candidates across sites.
           </p>
           <div className="h-[300px] w-full">
@@ -389,7 +410,7 @@ export function BiodiversityVisuals({
                     key={lbl}
                     dataKey={lbl}
                     stackId="a"
-                    fill={CHART_PALETTE[idx % CHART_PALETTE.length]}
+                    fill={palette[idx % palette.length]}
                   />
                 ))}
               </BarChart>
@@ -400,24 +421,24 @@ export function BiodiversityVisuals({
 
       {/* 3. Beta Diversity PCoA & Rarefaction Curves */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5">
+        <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#F2B84B] bg-white dark:bg-[#0B1B1A] p-5 surface-card">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <div>
               <h3 className="font-display text-base font-semibold">
                 Beta Diversity Ordination (PCoA)
               </h3>
-              <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5">
+              <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5">
                 PC1 ({betaResult.varianceExplained[0]}%) vs PC2 ({betaResult.varianceExplained[1]}%)
               </p>
             </div>
-            <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-[#F2F1EA] dark:bg-[#0A1615]">
+            <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-[#EFECE3] dark:bg-[#071312]">
               <button
                 type="button"
                 onClick={() => setBetaMetric('bray_curtis')}
                 className={`px-3 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
                   betaMetric === 'bray_curtis'
-                    ? 'bg-white dark:bg-[#16302E] text-[#0F4C4A] dark:text-[#FAF9F5] shadow-xs'
-                    : 'text-[#4A6361] dark:text-[#9DB6B3]'
+                    ? 'bg-white dark:bg-[#132C2A] text-[#0F4C4A] dark:text-[#FAF9F5] shadow-xs'
+                    : 'text-[#435E5B] dark:text-[#9DBAB6]'
                 }`}
               >
                 Bray-Curtis
@@ -539,15 +560,15 @@ export function BiodiversityVisuals({
           )}
         </section>
 
-        <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5">
+        <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#1F8A72] bg-white dark:bg-[#0B1B1A] p-5 surface-card">
           <h3 className="font-display text-base font-semibold">Rarefaction Curves</h3>
-          <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5 mb-4">
+          <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5 mb-4">
             Analytic Hurlbert expected richness E[S_n] across subsampling read depths to evaluate
             sampling completeness.
           </p>
-          <div className="h-[320px] w-full">
+          <div className="h-[340px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={rarefactionData} margin={{ top: 8, right: 16, left: 0, bottom: 16 }}>
+              <LineChart data={rarefactionData} margin={{ top: 8, right: 16, left: 4, bottom: 28 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E3E1D8" opacity={0.45} />
                 <XAxis
                   dataKey="depth"
@@ -555,7 +576,7 @@ export function BiodiversityVisuals({
                   label={{
                     value: 'Subsampled Read Depth',
                     position: 'insideBottom',
-                    offset: -8,
+                    offset: -10,
                     fontSize: 11,
                   }}
                 />
@@ -570,21 +591,21 @@ export function BiodiversityVisuals({
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0F1F1E',
-                    borderColor: '#1C3432',
+                    backgroundColor: '#0B1B1A',
+                    borderColor: '#1D3A37',
                     color: '#FAF9F5',
                     borderRadius: '8px',
                     fontSize: '12px',
                   }}
                 />
-                <Legend wrapperStyle={{ fontSize: '11px' }} />
+                <Legend verticalAlign="top" wrapperStyle={{ fontSize: '11px', paddingBottom: '12px' }} />
                 {samples.map((s, idx) => (
                   <Line
                     key={s.id}
                     type="monotone"
                     dataKey={s.siteName}
-                    stroke={CHART_PALETTE[idx % CHART_PALETTE.length]}
-                    strokeWidth={2}
+                    stroke={palette[idx % palette.length]}
+                    strokeWidth={2.25}
                     dot={false}
                     connectNulls
                   />
@@ -596,11 +617,11 @@ export function BiodiversityVisuals({
       </div>
 
       {/* 4. Abundance Heatmap */}
-      <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5">
+      <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#E8725A] bg-white dark:bg-[#0B1B1A] p-5 surface-card">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
             <h3 className="font-display text-base font-semibold">Taxon × Site Abundance Heatmap</h3>
-            <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5">
+            <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5">
               Discrete intensity scale calibrated to maximum site read abundance (0 to{' '}
               {heatmap.maxVal.toLocaleString()} reads).
             </p>

@@ -115,8 +115,9 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F5] dark:bg-[#091414] text-[#0F2423] dark:text-[#F2F5F3] flex flex-col">
-      <header className="max-w-7xl w-full mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div className="min-h-screen bg-[#FAF9F5] dark:bg-[#061111] bg-ocean-wash text-[#0F2423] dark:text-[#EEF4F2] flex flex-col relative">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-bio-grid opacity-55" />
+      <header className="relative max-w-7xl w-full mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link to="/" aria-label="TaxaTrace Home">
           <Logo size="sm" showWordmark />
         </Link>
@@ -124,20 +125,22 @@ export function LoginPage() {
           type="button"
           onClick={toggleTheme}
           aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          className="p-2 rounded-lg text-[#3F5957] dark:text-[#9DB6B3] hover:bg-[#ECEAE2] dark:hover:bg-[#142625]"
+          className="p-2 rounded-lg text-[#3B5755] dark:text-[#9DBAB6] hover:bg-[#ECE9DE] dark:hover:bg-[#122927]"
         >
           {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4 py-10">
-        <div className="w-full max-w-md rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-6 sm:p-8">
+      <main className="relative flex-1 flex items-center justify-center px-4 py-10">
+        <div className="w-full max-w-md rounded-2xl overflow-hidden border border-[#DEDBD0] dark:border-[#1D3A37] bg-white/95 dark:bg-[#0B1B1A]/95 backdrop-blur-sm surface-card">
+          <div className="h-1 w-full bg-gradient-to-r from-[#0F4C4A] via-[#1F8A72] to-[#7ED6B5]" />
+          <div className="p-6 sm:p-8">
           <div className="mb-6">
             <Logo size="md" showWordmark showTagline />
-            <h1 className="font-display text-2xl font-bold mt-5 text-[#0F2423] dark:text-[#FAF9F5]">
+            <h1 className="font-display text-2xl font-bold mt-5 text-[#0B2322] dark:text-[#FAF9F5]">
               {resetMode ? 'Reset your password' : 'Sign in to TaxaTrace'}
             </h1>
-            <p className="text-sm text-[#4A6361] dark:text-[#9DB6B3] mt-1">
+            <p className="text-sm text-[#435E5B] dark:text-[#9DBAB6] mt-1">
               {resetMode
                 ? 'We will send a secure password reset link to your email.'
                 : 'Access your environmental DNA projects, sequences, and diversity reports.'}
@@ -290,16 +293,16 @@ export function LoginPage() {
                 <button
                   type="submit"
                   disabled={submitting || locked}
-                  className="w-full py-2.5 px-4 text-sm font-semibold rounded-lg bg-[#0F4C4A] text-[#FAF9F5] hover:bg-[#16605D] dark:bg-[#1F8A72] dark:hover:bg-[#27A085] disabled:opacity-50 transition-colors"
+                  className="w-full py-2.5 px-4 text-sm font-semibold rounded-lg bg-gradient-to-r from-[#0F4C4A] to-[#176961] text-[#FAF9F5] shadow-sm shadow-[#0F4C4A]/20 hover:from-[#145E5B] hover:to-[#1F8A72] dark:from-[#1F8A72] dark:to-[#27A085] disabled:opacity-50"
                 >
                   {submitting ? 'Signing in...' : 'Sign In'}
                 </button>
               </form>
 
               <div className="my-5 flex items-center gap-3">
-                <div className="h-px flex-1 bg-[#E3E1D8] dark:bg-[#1C3432]" />
-                <span className="text-xs text-[#5A7370] dark:text-[#86A19E]">or</span>
-                <div className="h-px flex-1 bg-[#E3E1D8] dark:bg-[#1C3432]" />
+                <div className="h-px flex-1 bg-[#E3E0D5] dark:bg-[#1D3A37]" />
+                <span className="text-xs text-[#5A7370] dark:text-[#86A7A3]">or</span>
+                <div className="h-px flex-1 bg-[#E3E0D5] dark:bg-[#1D3A37]" />
               </div>
 
               <div className="space-y-2.5">
@@ -307,7 +310,7 @@ export function LoginPage() {
                   type="button"
                   disabled={submitting || locked}
                   onClick={handleGoogle}
-                  className="w-full py-2.5 px-4 text-sm font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244240] bg-[#FAF9F5] dark:bg-[#0A1615] hover:bg-[#EFECE3] dark:hover:bg-[#142625] transition-colors flex items-center justify-center gap-2.5"
+                  className="w-full py-2.5 px-4 text-sm font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244643] bg-[#FAF9F5] dark:bg-[#081413] hover:bg-[#EFECE3] dark:hover:bg-[#122927] flex items-center justify-center gap-2.5"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
                     <path
@@ -335,14 +338,14 @@ export function LoginPage() {
                     type="button"
                     disabled={submitting}
                     onClick={handleDemo}
-                    className="w-full py-2.5 px-4 text-xs font-medium rounded-lg border border-dashed border-[#1F8A72]/50 text-[#0F4C4A] dark:text-[#7ED6B5] hover:bg-[#7ED6B5]/10 transition-colors"
+                    className="w-full py-2.5 px-4 text-xs font-medium rounded-lg border border-dashed border-[#1F8A72]/50 text-[#0F4C4A] dark:text-[#7ED6B5] hover:bg-[#7ED6B5]/10"
                   >
                     Continue with Demo Researcher Account (Local Preview)
                   </button>
                 )}
               </div>
 
-              <p className="mt-6 text-center text-sm text-[#4A6361] dark:text-[#9DB6B3]">
+              <p className="mt-6 text-center text-sm text-[#435E5B] dark:text-[#9DBAB6]">
                 New to TaxaTrace?{' '}
                 <Link
                   to="/register"
@@ -353,6 +356,7 @@ export function LoginPage() {
               </p>
             </>
           )}
+          </div>
         </div>
       </main>
     </div>

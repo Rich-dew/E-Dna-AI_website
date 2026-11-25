@@ -236,10 +236,10 @@ export function UploadPipelinePanel({
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Sample Metadata Column */}
-        <div className="lg:col-span-5 rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5 space-y-4">
+        <div className="lg:col-span-5 rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#0F4C4A] dark:border-t-[#7ED6B5] bg-white dark:bg-[#0B1B1A] p-5 space-y-4 surface-card">
           <div>
             <h3 className="font-display text-base font-semibold">1. Sample Metadata</h3>
-            <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5">
+            <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5">
               Attach geospatial and ecological context or select an existing site in this project.
             </p>
           </div>
@@ -376,14 +376,14 @@ export function UploadPipelinePanel({
         </div>
 
         {/* File Dropzone & Pipeline Config Column */}
-        <div className="lg:col-span-7 rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5 flex flex-col justify-between space-y-5">
+        <div className="lg:col-span-7 rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#1F8A72] bg-white dark:bg-[#0B1B1A] p-5 flex flex-col justify-between space-y-5 surface-card">
           <div className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <h3 className="font-display text-base font-semibold">
                   2. Sequence Upload &amp; Pipeline Parameters
                 </h3>
-                <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5">
+                <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5">
                   FASTA, FASTQ, or CSV/TSV OTU/ASV tables · Max 50 MB · Automatic header
                   sanitization
                 </p>
@@ -411,8 +411,8 @@ export function UploadPipelinePanel({
               }}
               className={`rounded-xl border-2 border-dashed p-6 text-center transition-colors ${
                 dragActive
-                  ? 'border-[#1F8A72] bg-[#7ED6B5]/10'
-                  : 'border-[#D4D1C7] dark:border-[#244240] bg-[#FAF9F5] dark:bg-[#0A1615]'
+                  ? 'border-[#1F8A72] bg-[#7ED6B5]/15'
+                  : 'border-[#CFCBC0] dark:border-[#244643] bg-[#FAF9F5] dark:bg-[#071312] hover:border-[#1F8A72]/70 dark:hover:border-[#7ED6B5]/60'
               }`}
             >
               <UploadCloud className="w-8 h-8 mx-auto text-[#0F4C4A] dark:text-[#7ED6B5]" />
@@ -518,7 +518,7 @@ export function UploadPipelinePanel({
             type="button"
             disabled={running}
             onClick={handleExecutePipeline}
-            className="w-full py-2.5 px-4 text-sm font-semibold rounded-lg bg-[#0F4C4A] text-[#FAF9F5] hover:bg-[#16605D] dark:bg-[#1F8A72] dark:hover:bg-[#27A085] disabled:opacity-50 transition-colors inline-flex items-center justify-center gap-2"
+            className="w-full py-2.5 px-4 text-sm font-semibold rounded-lg bg-gradient-to-r from-[#0F4C4A] to-[#1F8A72] text-[#FAF9F5] hover:from-[#125A58] hover:to-[#249A80] shadow-xs disabled:opacity-50 transition-all inline-flex items-center justify-center gap-2"
           >
             <Play className="w-4 h-4" />
             {running ? `Running pipeline (${progressPct}%)...` : 'Run Bioinformatics Pipeline'}
@@ -528,16 +528,16 @@ export function UploadPipelinePanel({
 
       {/* Step-by-Step Progress Bar & Pipeline Summary */}
       {(running || lastJob) && (
-        <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5">
+        <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#5BB6E8] bg-white dark:bg-[#0B1B1A] p-5 surface-card">
           <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
             <h3 className="font-display text-sm font-semibold">Pipeline Execution Trace</h3>
             <span className="font-mono tabular-nums text-xs text-[#1F8A72] dark:text-[#7ED6B5]">
               {progressPct}% complete
             </span>
           </div>
-          <div className="w-full h-2 rounded-full bg-[#ECEAE2] dark:bg-[#152928] overflow-hidden mb-5">
+          <div className="w-full h-2.5 rounded-full bg-[#ECEAE2] dark:bg-[#132927] overflow-hidden mb-5">
             <div
-              className="h-full bg-[#1F8A72] transition-all duration-300"
+              className="h-full bg-gradient-to-r from-[#0F4C4A] via-[#1F8A72] to-[#7ED6B5] transition-all duration-300"
               style={{ width: `${progressPct}%` }}
             />
           </div>

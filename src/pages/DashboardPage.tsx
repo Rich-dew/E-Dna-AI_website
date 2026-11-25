@@ -147,22 +147,22 @@ export function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAF9F5] dark:bg-[#091414] text-[#0F2423] dark:text-[#F2F5F3] flex">
+    <div className="min-h-screen bg-[#F7F6F0] dark:bg-[#061111] text-[#0F2423] dark:text-[#EEF4F2] flex">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/45 backdrop-blur-xs lg:hidden"
         />
       )}
 
       {/* Workspace Sidebar — strictly researcher navigation, zero admin hints */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-[#0C1918] border-r border-[#E3E1D8] dark:border-[#1C3432] flex flex-col transform transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-[#0A1817] border-r border-[#E3E0D5] dark:border-[#193331] flex flex-col transform transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="h-16 px-4 border-b border-[#E3E1D8] dark:border-[#1C3432] flex items-center justify-between">
+        <div className="h-16 px-4 border-b border-[#E3E0D5] dark:border-[#193331] flex items-center justify-between">
           <Link to="/" aria-label="TaxaTrace Home">
             <Logo size="sm" showWordmark />
           </Link>
@@ -170,18 +170,18 @@ export function DashboardPage() {
             type="button"
             aria-label="Close sidebar"
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-1.5 rounded text-[#4A6361] dark:text-[#9DB6B3]"
+            className="lg:hidden p-1.5 rounded text-[#435E5B] dark:text-[#9DBAB6]"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Active Project Selector */}
-        <div className="p-4 border-b border-[#E3E1D8] dark:border-[#1C3432] space-y-2.5">
+        <div className="p-4 border-b border-[#E3E0D5] dark:border-[#193331] bg-[#FAF9F5]/60 dark:bg-[#081413]/60 space-y-2.5">
           <div className="flex items-center justify-between">
             <label
               htmlFor="active-project-select"
-              className="text-xs font-medium text-[#4A6361] dark:text-[#9DB6B3]"
+              className="text-xs font-semibold text-[#435E5B] dark:text-[#9DBAB6]"
             >
               Active Project
             </label>
@@ -198,7 +198,7 @@ export function DashboardPage() {
             id="active-project-select"
             value={activeProject?.id ?? ''}
             onChange={(e) => setActiveProjectId(e.target.value)}
-            className="w-full px-2.5 py-2 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244240] bg-[#FAF9F5] dark:bg-[#0A1615]"
+            className="w-full px-2.5 py-2 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244643] bg-white dark:bg-[#0B1B1A]"
           >
             {visibleProjects.map((p) => (
               <option key={p.id} value={p.id}>
@@ -220,10 +220,10 @@ export function DashboardPage() {
                   setTab(item.id);
                   setSidebarOpen(false);
                 }}
-                className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap ${
                   active
-                    ? 'bg-[#0F4C4A] text-[#FAF9F5] dark:bg-[#1F8A72]'
-                    : 'text-[#3F5957] dark:text-[#A9C2BF] hover:bg-[#F2F1EA] dark:hover:bg-[#132625]'
+                    ? 'bg-gradient-to-r from-[#0F4C4A] to-[#176961] text-[#FAF9F5] shadow-xs dark:from-[#1F8A72] dark:to-[#27A085]'
+                    : 'text-[#3B5755] dark:text-[#A9C5C1] hover:bg-[#F1EFE7] dark:hover:bg-[#122927] hover:text-[#0F4C4A] dark:hover:text-[#FAF9F5]'
                 }`}
               >
                 {item.icon}
@@ -234,17 +234,17 @@ export function DashboardPage() {
         </nav>
 
         {/* Account Footer */}
-        <div className="p-4 border-t border-[#E3E1D8] dark:border-[#1C3432] space-y-2">
+        <div className="p-4 border-t border-[#E3E0D5] dark:border-[#193331] bg-[#FAF9F5]/50 dark:bg-[#081413]/50 space-y-2.5">
           <div className="text-xs">
             <p className="font-semibold truncate">{user.name}</p>
-            <p className="text-[#4A6361] dark:text-[#9DB6B3] truncate">
+            <p className="text-[#435E5B] dark:text-[#9DBAB6] truncate">
               {user.institution || user.email}
             </p>
           </div>
-          <div className="flex items-center gap-2 pt-1">
+          <div className="flex items-center gap-2 pt-0.5">
             <Link
               to="/profile"
-              className="flex-1 inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244240] hover:bg-[#EFECE3] dark:hover:bg-[#142625]"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244643] bg-white dark:bg-[#0B1B1A] hover:bg-[#EFECE3] dark:hover:bg-[#122927]"
             >
               <UserCircle className="w-3.5 h-3.5" />
               Profile
@@ -256,7 +256,7 @@ export function DashboardPage() {
                 navigate('/');
               }}
               aria-label="Sign out"
-              className="inline-flex items-center justify-center px-2.5 py-1.5 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244240] hover:bg-[#EFECE3] dark:hover:bg-[#142625]"
+              className="inline-flex items-center justify-center px-2.5 py-1.5 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244643] bg-white dark:bg-[#0B1B1A] hover:bg-[#EFECE3] dark:hover:bg-[#122927]"
             >
               <LogOut className="w-3.5 h-3.5" />
             </button>
@@ -283,22 +283,22 @@ export function DashboardPage() {
         )}
 
         {/* Top Contextual Header */}
-        <header className="sticky top-0 z-20 h-16 px-4 sm:px-6 bg-[#FAF9F5]/95 dark:bg-[#091414]/95 backdrop-blur-sm border-b border-[#E3E1D8] dark:border-[#1C3432] flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-20 h-16 px-4 sm:px-6 bg-[#FAF9F5]/88 dark:bg-[#061111]/88 backdrop-blur-md border-b border-[#E3E0D5] dark:border-[#193331] flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <button
               type="button"
               aria-label="Open workspace navigation"
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-[#3F5957] dark:text-[#9DB6B3] hover:bg-[#ECEAE2] dark:hover:bg-[#142625]"
+              className="lg:hidden p-2 rounded-lg text-[#3B5755] dark:text-[#9DBAB6] hover:bg-[#ECE9DE] dark:hover:bg-[#122927]"
             >
               <Menu className="w-5 h-5" />
             </button>
             <div className="min-w-0">
-              <h1 className="font-display text-base sm:text-lg font-bold truncate">
+              <h1 className="font-display text-base sm:text-lg font-bold truncate text-[#0B2322] dark:text-[#FAF9F5]">
                 {activeProject ? activeProject.name : 'Research Workspace'}
               </h1>
               {activeProject && (
-                <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] truncate">
+                <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] truncate">
                   Marker {activeProject.markerGene} · {projectSamples.length} site(s) ·{' '}
                   {projectAssignments.length} classified clusters
                 </p>
@@ -311,14 +311,14 @@ export function DashboardPage() {
               type="button"
               onClick={toggleTheme}
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-              className="p-2 rounded-lg text-[#3F5957] dark:text-[#9DB6B3] hover:bg-[#ECEAE2] dark:hover:bg-[#142625]"
+              className="p-2 rounded-lg text-[#3B5755] dark:text-[#9DBAB6] hover:bg-[#ECE9DE] dark:hover:bg-[#122927] hover:text-[#0F4C4A] dark:hover:text-[#7ED6B5]"
             >
               {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
             <button
               type="button"
               onClick={() => setTab('upload')}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-[#0F4C4A] text-[#FAF9F5] hover:bg-[#16605D] dark:bg-[#1F8A72] dark:hover:bg-[#27A085] whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-gradient-to-r from-[#0F4C4A] to-[#176961] text-[#FAF9F5] shadow-xs hover:from-[#145E5B] hover:to-[#1F8A72] dark:from-[#1F8A72] dark:to-[#27A085] whitespace-nowrap"
             >
               <Upload className="w-3.5 h-3.5" />
               Upload eDNA
@@ -327,42 +327,42 @@ export function DashboardPage() {
         </header>
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
-          {/* KPI Summary Strip */}
+          {/* KPI Summary Strip — Brand-Spectrum Top Hairlines */}
           {activeProject && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-4 rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E]">
-                <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3]">Filtered Reads</p>
-                <p className="font-mono tabular-nums text-2xl font-semibold mt-1">
+              <div className="p-4 sm:p-5 rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#5BB6E8] bg-white dark:bg-[#0B1B1A] surface-card">
+                <p className="text-xs font-medium text-[#435E5B] dark:text-[#9DBAB6]">Filtered Reads</p>
+                <p className="font-mono tabular-nums text-2xl sm:text-[26px] font-semibold mt-1 text-[#0B2322] dark:text-[#FAF9F5]">
                   {kpis.totalReads.toLocaleString()}
                 </p>
-                <p className="text-[11px] text-[#5A7370] dark:text-[#86A19E] mt-0.5">
+                <p className="text-[11px] text-[#55706D] dark:text-[#86A7A3] mt-1">
                   Across {projectSamples.length} site(s)
                 </p>
               </div>
-              <div className="p-4 rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E]">
-                <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3]">Assigned Species</p>
-                <p className="font-mono tabular-nums text-2xl font-semibold text-[#0F4C4A] dark:text-[#7ED6B5] mt-1">
+              <div className="p-4 sm:p-5 rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#1F8A72] bg-white dark:bg-[#0B1B1A] surface-card">
+                <p className="text-xs font-medium text-[#435E5B] dark:text-[#9DBAB6]">Assigned Species</p>
+                <p className="font-mono tabular-nums text-2xl sm:text-[26px] font-semibold text-[#0F4C4A] dark:text-[#7ED6B5] mt-1">
                   {kpis.assignedTaxa}
                 </p>
-                <p className="text-[11px] text-[#5A7370] dark:text-[#86A19E] mt-0.5">
+                <p className="text-[11px] text-[#55706D] dark:text-[#86A7A3] mt-1">
                   &ge;97% calibrated identity
                 </p>
               </div>
-              <div className="p-4 rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E]">
-                <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3]">Mean Shannon H&apos;</p>
-                <p className="font-mono tabular-nums text-2xl font-semibold mt-1">
+              <div className="p-4 sm:p-5 rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#F2B84B] bg-white dark:bg-[#0B1B1A] surface-card">
+                <p className="text-xs font-medium text-[#435E5B] dark:text-[#9DBAB6]">Mean Shannon H&apos;</p>
+                <p className="font-mono tabular-nums text-2xl sm:text-[26px] font-semibold text-[#8A5A08] dark:text-[#F2B84B] mt-1">
                   {kpis.meanShannon.toFixed(3)}
                 </p>
-                <p className="text-[11px] text-[#5A7370] dark:text-[#86A19E] mt-0.5">
+                <p className="text-[11px] text-[#55706D] dark:text-[#86A7A3] mt-1">
                   Site alpha entropy
                 </p>
               </div>
-              <div className="p-4 rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E]">
-                <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3]">Novel Taxa Flags</p>
-                <p className="font-mono tabular-nums text-2xl font-semibold text-[#C84B31] dark:text-[#E8725A] mt-1">
+              <div className="p-4 sm:p-5 rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] border-t-2 border-t-[#E8725A] bg-white dark:bg-[#0B1B1A] surface-card">
+                <p className="text-xs font-medium text-[#435E5B] dark:text-[#9DBAB6]">Novel Taxa Flags</p>
+                <p className="font-mono tabular-nums text-2xl sm:text-[26px] font-semibold text-[#C24C34] dark:text-[#E8725A] mt-1">
                   {kpis.novelFlags}
                 </p>
-                <p className="text-[11px] text-[#5A7370] dark:text-[#86A19E] mt-0.5">
+                <p className="text-[11px] text-[#55706D] dark:text-[#86A7A3] mt-1">
                   Unclassified &lt;90% identity
                 </p>
               </div>
@@ -381,11 +381,11 @@ export function DashboardPage() {
               {tab === 'overview' && (
                 <div className="space-y-6">
                   {/* Projects List */}
-                  <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] p-5">
+                  <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] bg-white dark:bg-[#0B1B1A] p-5 surface-card">
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <div>
                         <h2 className="font-display text-base font-semibold">Research Projects</h2>
-                        <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3]">
+                        <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6]">
                           Select a project to inspect its samples, taxonomy assignments, and charts.
                         </p>
                       </div>
@@ -399,7 +399,7 @@ export function DashboardPage() {
                       </button>
                     </div>
 
-                    <div className="divide-y divide-[#ECEAE2] dark:divide-[#182E2C]">
+                    <div className="divide-y divide-[#ECE9DE] dark:divide-[#17302E]">
                       {visibleProjects.map((p) => {
                         const isSelected = p.id === activeProject.id;
                         const count = samples.filter((s) => s.projectId === p.id).length;
@@ -416,19 +416,19 @@ export function DashboardPage() {
                               className="text-left flex-1 min-w-0"
                             >
                               <div className="flex items-center gap-2">
-                                <span className="font-display text-sm font-semibold text-[#0F2423] dark:text-[#FAF9F5]">
+                                <span className="font-display text-sm font-semibold text-[#0B2322] dark:text-[#FAF9F5]">
                                   {p.name}
                                 </span>
                                 {isSelected && (
-                                  <span className="text-[11px] font-medium text-[#1F8A72] dark:text-[#7ED6B5]">
+                                  <span className="text-[11px] font-semibold text-[#1F8A72] dark:text-[#7ED6B5]">
                                     · Active
                                   </span>
                                 )}
                               </div>
-                              <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3] mt-0.5 line-clamp-1">
+                              <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6] mt-0.5 line-clamp-1">
                                 {p.description}
                               </p>
-                              <div className="text-[11px] text-[#5A7370] dark:text-[#86A19E] mt-1 font-mono tabular-nums">
+                              <div className="text-[11px] text-[#55706D] dark:text-[#86A7A3] mt-1 font-mono tabular-nums">
                                 Marker {p.markerGene} · {count} sample(s) · Status: {p.status} ·
                                 Updated {new Date(p.updatedAt).toLocaleDateString()}
                               </div>
@@ -441,7 +441,7 @@ export function DashboardPage() {
                                   setActiveProjectId(p.id);
                                   setTab('biodiversity');
                                 }}
-                                className="px-3 py-1.5 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244240] hover:bg-[#EFECE3] dark:hover:bg-[#142625]"
+                                className="px-3 py-1.5 text-xs font-medium rounded-lg border border-[#D4D1C7] dark:border-[#244643] hover:bg-[#EFECE3] dark:hover:bg-[#122927]"
                               >
                                 View Charts
                               </button>
@@ -453,7 +453,7 @@ export function DashboardPage() {
                                     deleteProject(p.id);
                                     pushToast({ type: 'info', title: `Deleted ${p.name}` });
                                   }}
-                                  className="p-1.5 rounded-lg text-[#C84B31] hover:bg-[#E8725A]/10"
+                                  className="p-1.5 rounded-lg text-[#C24C34] hover:bg-[#E8725A]/10"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </button>
@@ -466,20 +466,20 @@ export function DashboardPage() {
                   </section>
 
                   {/* Sampling Sites Table */}
-                  <section className="rounded-xl border border-[#E3E1D8] dark:border-[#1C3432] bg-white dark:bg-[#0F1F1E] overflow-hidden">
-                    <div className="px-5 py-4 border-b border-[#E3E1D8] dark:border-[#1C3432] flex items-center justify-between gap-3">
+                  <section className="rounded-xl border border-[#E3E0D5] dark:border-[#1D3A37] bg-white dark:bg-[#0B1B1A] overflow-hidden surface-card">
+                    <div className="px-5 py-4 border-b border-[#E3E0D5] dark:border-[#1D3A37] flex items-center justify-between gap-3">
                       <div>
                         <h2 className="font-display text-base font-semibold">
                           Sampling Sites in {activeProject.name}
                         </h2>
-                        <p className="text-xs text-[#4A6361] dark:text-[#9DB6B3]">
+                        <p className="text-xs text-[#435E5B] dark:text-[#9DBAB6]">
                           Geospatial coordinates, depth, collection date, habitat, and marker gene.
                         </p>
                       </div>
                       <button
                         type="button"
                         onClick={() => setTab('upload')}
-                        className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#0F4C4A] text-[#FAF9F5] dark:bg-[#1F8A72]"
+                        className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-[#0F4C4A] to-[#176961] text-[#FAF9F5] hover:from-[#145E5B] hover:to-[#1F8A72] dark:from-[#1F8A72] dark:to-[#27A085]"
                       >
                         Add Sample &amp; Upload
                       </button>
