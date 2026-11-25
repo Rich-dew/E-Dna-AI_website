@@ -1,0 +1,108 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Real admin authorization requires BOTH Firebase custom claim admin == true
+    // AND Firestore users/{uid}.role == 'admin' and disabled == false.
+    function isAdmin() {
+      return isSignedIn()
+        && request.auth.token.admin == true
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.disabled == false;
+    }
+
+    function isValidUserProfileCreate(data) {
+      return data.keys().hasOnly([
+          'name', 'email', 'institution', 'profession', 'role', 'country', 'createdAt', 'disabled'
+        ])
+        && data.name is string && data.name.size() >= 2 && data.name.size() <= 120
+        && data.email is string && data.email.size() <= 200
+        && data.institution is string && data.institution.size() <= 160
+        && data.country is string && data.country.size() <= 100
+        // Client registration can NEVER self-assign admin or pre-disable accounts
+        && data.role == 'user'
+        && data.disabled == false;
+    }
+
+    // Users collection: users can read/update their own profile, NEVER role or disabled.
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+
+      allow create: if isOwner(uid) && isValidUserProfileCreate(request.resource.data);
+
+      allow update: if (
+          isOwner(uid)
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'disabled', 'createdAt'])
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.disabled == resource.data.disabled
+        ) || isAdmin();
+
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    // Projects collection: owner-only read/write, admins may read for governance.
+    match /projects/{projectId} {
+      allow read: if (isSignedIn() && resource.data.ownerUid == request.auth.uid) || isAdmin();
+
+      allow create: if isSignedIn()
+        && request.auth.token.email_verified == true
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 2
+        && request.resource.data.name.size() <= 160
+        && request.resource.data.markerGene in ['12S', '16S', '18S', 'COI', 'ITS', 'rbcL'];
+
+      allow update: if isSignedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid;
+
+      allow delete: if (isSignedIn() && resource.data.ownerUid == request.auth.uid) || isAdmin();
+    }
+
+    // Jobs collection: owner-only read/create/update, admins may read all jobs.
+    match /jobs/{jobId} {
+      allow read: if (isSignedIn() && resource.data.ownerUid == request.auth.uid) || isAdmin();
+
+      allow create: if isSignedIn()
+        && request.auth.token.email_verified == true
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.projectId is string;
+
+      allow update: if isSignedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid;
+
+      allow delete: if isAdmin();
+    }
+
+    // Audit Logs: strictly admin-read and admin-create only (append-only, immutable).
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.actorUid == request.auth.uid
+        && request.resource.data.action is string
+        && request.resource.data.target is string;
+      allow update, delete: if false;
+    }
+
+    // Global Settings (e.g. settings/announcement): readable by signed-in users, admin-write only.
+    match /settings/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Default deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "TaxaTrace",
+  "description": "Environmental DNA (eDNA) taxonomy assignment, novel taxa detection, and biodiversity analytics platform for ecological researchers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
