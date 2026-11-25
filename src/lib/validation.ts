@@ -211,3 +211,46 @@ export function getFriendlyAuthError(codeOrMessage: string): string {
   }
   return codeOrMessage || 'Authentication error occurred. Please try again.';
 }
+
+export function cleanEnvValue(raw: string | undefined | null): string {
+  if (!raw) return '';
+  const trimmed = raw.trim().replace(/^["']+|["']+$/g, '').trim();
+  if (!trimmed) return '';
+  const lower = trimmed.toLowerCase();
+  if (
+    lower === 'undefined' ||
+    lower === 'null' ||
+    lower.startsWith('my_') ||
+    lower.includes('your-project') ||
+    lower.includes('your_public') ||
+    lower.includes('placeholder')
+  ) {
+    return '';
+  }
+  return trimmed;
+}
+
+export function normalizeSupabaseUrl(raw: string | undefined | null): string | null {
+  const cleaned = cleanEnvValue(raw);
+  if (!cleaned) return null;
+
+  // Support users who pasted a bare Supabase hostname without https://
+  const candidate =
+    !/^https?:\/\//i.test(cleaned) && /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(cleaned)
+      ? `https://${cleaned}`
+      : cleaned;
+
+  try {
+    const parsed = new URL(candidate);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      return null;
+    }
+    if (!parsed.hostname || (!parsed.hostname.includes('.') && parsed.hostname !== 'localhost')) {
+      return null;
+    }
+    return parsed.origin;
+  } catch {
+    return null;
+  }
+}
+

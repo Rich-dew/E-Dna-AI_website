@@ -1,9 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  cleanEnvValue,
   evaluatePasswordStrength,
   isLoginLocked,
   MAX_UPLOAD_BYTES,
+  normalizeSupabaseUrl,
   recordFailedLogin,
   validateRegisterForm,
   validateUploadFile,
@@ -67,4 +69,15 @@ test('login lockout activates after exactly 5 failed attempts', () => {
   assert.equal(state.failedAttempts, 5);
   assert.equal(isLoginLocked(state, t0), true);
   assert.equal(isLoginLocked(state, t0 + 16 * 60 * 1000), false);
+});
+
+test('normalizeSupabaseUrl handles invalid strings, placeholders, quotes, and bare hosts safely', () => {
+  assert.equal(normalizeSupabaseUrl(''), null);
+  assert.equal(normalizeSupabaseUrl('MY_SUPABASE_URL'), null);
+  assert.equal(normalizeSupabaseUrl('https://your-project.supabase.co'), null);
+  assert.equal(normalizeSupabaseUrl('not a url!'), null);
+  assert.equal(normalizeSupabaseUrl('ftp://invalid.supabase.co'), null);
+  assert.equal(normalizeSupabaseUrl('"https://abc123.supabase.co/"'), 'https://abc123.supabase.co');
+  assert.equal(normalizeSupabaseUrl('abc123.supabase.co'), 'https://abc123.supabase.co');
+  assert.equal(cleanEnvValue('"my-valid-key"'), 'my-valid-key');
 });

@@ -1,10 +1,9 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { auth } from './firebase';
+import { cleanEnvValue, normalizeSupabaseUrl } from './validation';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim() || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim() || '';
-
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+const supabaseUrl = normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL);
+const supabaseAnonKey = cleanEnvValue(import.meta.env.VITE_SUPABASE_ANON_KEY);
 
 /**
  * Supabase client configured for Firebase Third-Party Auth via the `accessToken` callback.
@@ -12,8 +11,10 @@ export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
  * evaluates `owner_uid = auth.jwt()->>'sub'`.
  * Never uses the Supabase `service_role` key in client code.
  */
-export const supabase: SupabaseClient | null = isSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseAnonKey, {
+function initSupabaseClient(): SupabaseClient | null {
+  if (!supabaseUrl || !supabaseAnonKey) return null;
+  try {
+    return createClient(supabaseUrl, supabaseAnonKey, {
       accessToken: async () => {
         try {
           return (await auth?.currentUser?.getIdToken()) ?? null;
@@ -21,8 +22,15 @@ export const supabase: SupabaseClient | null = isSupabaseConfigured
           return null;
         }
       },
-    })
-  : null;
+    });
+  } catch (err) {
+    console.warn('Supabase client disabled due to invalid configuration:', err);
+    return null;
+  }
+}
+
+export const supabase: SupabaseClient | null = initSupabaseClient();
+export const isSupabaseConfigured = Boolean(supabase);
 
 export const EDNA_STORAGE_BUCKET = 'edna-uploads';
 
