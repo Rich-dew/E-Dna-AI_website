@@ -1,7 +1,7 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, type Auth } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
-import { cleanEnvValue } from './validation';
+import { cleanEnvValue, isValidFirebaseConfig } from './validation';
 
 const firebaseConfig = {
   apiKey: cleanEnvValue(import.meta.env.VITE_FIREBASE_API_KEY),
@@ -12,12 +12,7 @@ const firebaseConfig = {
   appId: cleanEnvValue(import.meta.env.VITE_FIREBASE_APP_ID),
 };
 
-const hasFirebaseEnv = Boolean(
-  firebaseConfig.apiKey &&
-    firebaseConfig.authDomain &&
-    firebaseConfig.projectId &&
-    firebaseConfig.appId,
-);
+const hasFirebaseEnv = isValidFirebaseConfig(firebaseConfig);
 
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;

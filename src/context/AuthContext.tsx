@@ -457,28 +457,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loginAdminCredentials = useCallback(
     async (email: string, password: string): Promise<{ hasClaim: boolean; hasFirestoreRole: boolean }> => {
       if (isFirebaseConfigured && auth && db) {
-        const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
-        const tokenRes = await cred.user.getIdTokenResult(true);
-        const snap = await getDoc(doc(db, 'users', cred.user.uid));
-        const hasClaim = tokenRes.claims?.admin === true;
-        const hasFirestoreRole = snap.exists() && snap.data().role === 'admin' && !snap.data().disabled;
-        setHasAdminClaim(hasClaim && hasFirestoreRole);
-        if (snap.exists()) {
-          const data = snap.data();
-          setUser({
-            uid: cred.user.uid,
-            name: String(data.name || cred.user.displayName || 'Administrator'),
-            email: String(data.email || cred.user.email || email),
-            institution: String(data.institution || ''),
-            profession: (data.profession as ResearcherProfession) || 'Bioinformatician',
-            role: data.role === 'admin' ? 'admin' : 'user',
-            country: String(data.country || ''),
-            createdAt: String(data.createdAt || new Date().toISOString()),
-            disabled: Boolean(data.disabled),
-            emailVerified: cred.user.emailVerified,
-          });
+        try {
+          const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
+          const tokenRes = await cred.user.getIdTokenResult(true);
+          const snap = await getDoc(doc(db, 'users', cred.user.uid));
+          const hasClaim = tokenRes.claims?.admin === true;
+          const hasFirestoreRole =
+            snap.exists() && snap.data().role === 'admin' && !snap.data().disabled;
+          setHasAdminClaim(hasClaim && hasFirestoreRole);
+          if (snap.exists()) {
+            const data = snap.data();
+            setUser({
+              uid: cred.user.uid,
+              name: String(data.name || cred.user.displayName || 'Administrator'),
+              email: String(data.email || cred.user.email || email),
+              institution: String(data.institution || ''),
+              profession: (data.profession as ResearcherProfession) || 'Bioinformatician',
+              role: data.role === 'admin' ? 'admin' : 'user',
+              country: String(data.country || ''),
+              createdAt: String(data.createdAt || new Date().toISOString()),
+              disabled: Boolean(data.disabled),
+              emailVerified: cred.user.emailVerified,
+            });
+          }
+          return { hasClaim, hasFirestoreRole };
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : 'Invalid administrator credentials.';
+          throw new Error(getFriendlyAuthError(msg));
         }
-        return { hasClaim, hasFirestoreRole };
       }
 
       const users = loadLocalUsers();

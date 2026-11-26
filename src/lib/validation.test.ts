@@ -4,7 +4,10 @@ import {
   cleanEnvValue,
   evaluatePasswordStrength,
   isLoginLocked,
+  isValidFirebaseConfig,
+  isValidSupabaseKey,
   MAX_UPLOAD_BYTES,
+  normalizeAdminRoute,
   normalizeSupabaseUrl,
   recordFailedLogin,
   validateRegisterForm,
@@ -81,3 +84,44 @@ test('normalizeSupabaseUrl handles invalid strings, placeholders, quotes, and ba
   assert.equal(normalizeSupabaseUrl('abc123.supabase.co'), 'https://abc123.supabase.co');
   assert.equal(cleanEnvValue('"my-valid-key"'), 'my-valid-key');
 });
+
+test('isValidFirebaseConfig and isValidSupabaseKey reject dummy values like 2026 and accept real formats', () => {
+  assert.equal(
+    isValidFirebaseConfig({
+      apiKey: '2026',
+      authDomain: '2026',
+      projectId: '2026',
+      appId: '2026',
+    }),
+    false,
+  );
+  assert.equal(
+    isValidFirebaseConfig({
+      apiKey: 'AIzaSyD4x9kLmN0pQrStUvWxYz1234567890abcd',
+      authDomain: 'taxatrace-prod.firebaseapp.com',
+      projectId: 'taxatrace-prod',
+      appId: '1:123456789012:web:abcdef1234567890',
+    }),
+    true,
+  );
+  assert.equal(isValidSupabaseKey('2026'), null);
+  assert.equal(isValidSupabaseKey('MY_SUPABASE_ANON_KEY'), null);
+  assert.ok(isValidSupabaseKey('sb_publishable_abcdefghijklmnopqrstuvwxyz1234'));
+  assert.ok(
+    isValidSupabaseKey(
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.signaturepart1234567890',
+    ),
+  );
+});
+
+test('normalizeAdminRoute defaults safely on malformed or colliding values', () => {
+  assert.equal(normalizeAdminRoute(undefined), '/control-9x7k');
+  assert.equal(normalizeAdminRoute(''), '/control-9x7k');
+  assert.equal(normalizeAdminRoute('2026'), '/control-9x7k');
+  assert.equal(normalizeAdminRoute('control-9x7k'), '/control-9x7k');
+  assert.equal(normalizeAdminRoute('/dashboard'), '/control-9x7k');
+  assert.equal(normalizeAdminRoute('/login'), '/control-9x7k');
+  assert.equal(normalizeAdminRoute('/ops-9x7k/'), '/ops-9x7k');
+  assert.equal(normalizeAdminRoute('/gov-console-2026'), '/gov-console-2026');
+});
+

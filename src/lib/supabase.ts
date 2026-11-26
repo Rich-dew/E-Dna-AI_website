@@ -1,9 +1,9 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { auth } from './firebase';
-import { cleanEnvValue, normalizeSupabaseUrl } from './validation';
+import { isValidSupabaseKey, normalizeSupabaseUrl } from './validation';
 
 const supabaseUrl = normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL);
-const supabaseAnonKey = cleanEnvValue(import.meta.env.VITE_SUPABASE_ANON_KEY);
+const supabaseAnonKey = isValidSupabaseKey(import.meta.env.VITE_SUPABASE_ANON_KEY);
 
 /**
  * Supabase client configured for Firebase Third-Party Auth via the `accessToken` callback.

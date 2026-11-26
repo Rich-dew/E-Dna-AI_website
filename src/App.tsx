@@ -19,13 +19,12 @@ import { NotFoundPage } from './pages/NotFoundPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { RegisterPage } from './pages/RegisterPage';
 import { VerifyEmailPage } from './pages/VerifyEmailPage';
+import { normalizeAdminRoute } from './lib/validation';
 
 // Lazy-loaded hidden admin console — never referenced anywhere in public or researcher UI
 const AdminPortalPage = lazy(() => import('./pages/AdminPortalPage'));
 
-const ADMIN_ROUTE_PATH =
-  (import.meta.env.VITE_ADMIN_ROUTE?.trim() || '/control-9x7k').replace(/\/+$/, '') ||
-  '/control-9x7k';
+const ADMIN_ROUTE_PATH = normalizeAdminRoute(import.meta.env.VITE_ADMIN_ROUTE);
 
 function ProtectedResearcherRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();

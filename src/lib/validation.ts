@@ -209,6 +209,15 @@ export function getFriendlyAuthError(codeOrMessage: string): string {
   if (code.includes('requires-recent-login')) {
     return 'For security, please sign out and sign in again before performing this sensitive action.';
   }
+  if (code.includes('api-key-not-valid') || code.includes('invalid-api-key')) {
+    return 'Firebase API key is invalid. Check your VITE_FIREBASE_API_KEY configuration in Settings > Secrets.';
+  }
+  if (code.includes('unauthorized-domain')) {
+    return 'This app domain is not authorized in your Firebase Authentication settings.';
+  }
+  if (code.includes('operation-not-allowed') || code.includes('configuration-not-found')) {
+    return 'This sign-in method is not enabled in your Firebase project Authentication settings.';
+  }
   return codeOrMessage || 'Authentication error occurred. Please try again.';
 }
 
@@ -228,6 +237,28 @@ export function cleanEnvValue(raw: string | undefined | null): string {
     return '';
   }
   return trimmed;
+}
+
+export function isValidFirebaseConfig(config: {
+  apiKey: string;
+  authDomain: string;
+  projectId: string;
+  appId: string;
+}): boolean {
+  const validApiKey = /^AIza[0-9A-Za-z_-]{30,}$/.test(config.apiKey);
+  const validAuthDomain = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(config.authDomain);
+  const validProjectId = /^[a-z][a-z0-9-]{3,62}$/i.test(config.projectId);
+  const validAppId = /^\d+:\d+:(web|ios|android):[0-9a-fA-F]+$/.test(config.appId);
+  return validApiKey && validAuthDomain && validProjectId && validAppId;
+}
+
+export function isValidSupabaseKey(raw: string | undefined | null): string | null {
+  const cleaned = cleanEnvValue(raw);
+  if (!cleaned) return null;
+  const isJwt =
+    cleaned.length >= 40 && /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(cleaned);
+  const isPublishableKey = /^sb_publishable_[A-Za-z0-9_-]{16,}$/.test(cleaned);
+  return isJwt || isPublishableKey ? cleaned : null;
 }
 
 export function normalizeSupabaseUrl(raw: string | undefined | null): string | null {
@@ -253,4 +284,24 @@ export function normalizeSupabaseUrl(raw: string | undefined | null): string | n
     return null;
   }
 }
+
+const RESERVED_PUBLIC_ROUTES = new Set([
+  '/',
+  '/login',
+  '/register',
+  '/verify-email',
+  '/dashboard',
+  '/profile',
+]);
+
+export function normalizeAdminRoute(raw: string | undefined | null): string {
+  const cleaned = cleanEnvValue(raw);
+  if (!cleaned) return '/control-9x7k';
+  const trimmed = cleaned.replace(/\/+$/, '');
+  if (!trimmed.startsWith('/')) return '/control-9x7k';
+  if (!/^\/[A-Za-z0-9/_-]{2,64}$/.test(trimmed)) return '/control-9x7k';
+  if (RESERVED_PUBLIC_ROUTES.has(trimmed.toLowerCase())) return '/control-9x7k';
+  return trimmed;
+}
+
 

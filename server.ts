@@ -264,52 +264,81 @@ Explicitly address reference-database gaps, marker gene / primer amplification b
 Dataset JSON:
 ${JSON.stringify(sanitizedPayload, null, 2)}`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-4-hydrogen',
-        contents: prompt,
-        config: {
-          systemInstruction:
-            'You are a senior molecular ecologist writing plain-language ecological interpretations of eDNA metabarcoding results. Keep prose clear, objective, concise (each paragraph 2-4 sentences), and scientifically accurate.',
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              executiveOverview: {
-                type: Type.STRING,
-                description: 'Plain-language ecological overview of biodiversity across sampled sites.',
-              },
-              communityStructure: {
-                type: Type.STRING,
-                description:
-                  'Interpretation of dominant taxonomic groups, alpha diversity indices (Shannon, Simpson, Chao1), and site-to-site beta turnover.',
-              },
-              novelTaxaInterpretation: {
-                type: Type.STRING,
-                description:
-                  'Careful discussion of low-confidence and unclassified/possible novel taxa without over-claiming discovery.',
-              },
-              caveats: {
-                type: Type.ARRAY,
-                items: { type: Type.STRING },
-                description:
-                  '4-5 specific methodological caveats including reference-database gaps, marker gene bias, PCR bias, and eDNA shedding/transport.',
-              },
-              recommendedNextSteps: {
-                type: Type.ARRAY,
-                items: { type: Type.STRING },
-                description: '3-4 actionable validation or follow-up sampling steps for researchers.',
-              },
+      const generationConfig = {
+        systemInstruction:
+          'You are a senior molecular ecologist writing plain-language ecological interpretations of eDNA metabarcoding results. Keep prose clear, objective, concise (each paragraph 2-4 sentences), and scientifically accurate.',
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            executiveOverview: {
+              type: Type.STRING,
+              description: 'Plain-language ecological overview of biodiversity across sampled sites.',
             },
-            required: [
-              'executiveOverview',
-              'communityStructure',
-              'novelTaxaInterpretation',
-              'caveats',
-              'recommendedNextSteps',
-            ],
+            communityStructure: {
+              type: Type.STRING,
+              description:
+                'Interpretation of dominant taxonomic groups, alpha diversity indices (Shannon, Simpson, Chao1), and site-to-site beta turnover.',
+            },
+            novelTaxaInterpretation: {
+              type: Type.STRING,
+              description:
+                'Careful discussion of low-confidence and unclassified/possible novel taxa without over-claiming discovery.',
+            },
+            caveats: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+              description:
+                '4-5 specific methodological caveats including reference-database gaps, marker gene bias, PCR bias, and eDNA shedding/transport.',
+            },
+            recommendedNextSteps: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+              description: '3-4 actionable validation or follow-up sampling steps for researchers.',
+            },
           },
+          required: [
+            'executiveOverview',
+            'communityStructure',
+            'novelTaxaInterpretation',
+            'caveats',
+            'recommendedNextSteps',
+          ],
         },
-      });
+      };
+
+      const candidateModels = ['gemini-4-hydrogen', 'gemini-3.1-flash-lite'] as const;
+      let response: Awaited<ReturnType<typeof ai.models.generateContent>> | null = null;
+      let usedModel: string = candidateModels[0];
+      let lastError: unknown = null;
+
+      for (const modelName of candidateModels) {
+        try {
+          response = await ai.models.generateContent({
+            model: modelName,
+            contents: prompt,
+            config: generationConfig,
+          });
+          usedModel = modelName;
+          break;
+        } catch (err: unknown) {
+          lastError = err;
+          const errText = err instanceof Error ? err.message : String(err);
+          const isTransient =
+            errText.includes('503') ||
+            errText.includes('UNAVAILABLE') ||
+            errText.includes('429') ||
+            errText.includes('high demand');
+          if (!isTransient) {
+            throw err;
+          }
+          console.warn(`Gemini model ${modelName} temporarily unavailable; trying fallback.`);
+        }
+      }
+
+      if (!response) {
+        throw lastError instanceof Error ? lastError : new Error('Gemini service is temporarily busy.');
+      }
 
       const rawText = (response.text ?? '').trim();
       if (!rawText) {
@@ -320,15 +349,17 @@ ${JSON.stringify(sanitizedPayload, null, 2)}`;
       const parsed = JSON.parse(rawText);
       res.json({
         generatedAt: new Date().toISOString(),
-        model: 'gemini-4-hydrogen',
+        model: usedModel,
         ...parsed,
       });
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Unexpected Gemini API failure.';
       console.error('Gemini summarize error:', message);
-      res.status(502).json({
-        error: `Failed to generate Gemini ecological summary: ${message}`,
-      });
+      const friendly =
+        message.includes('503') || message.includes('UNAVAILABLE') || message.includes('high demand')
+          ? 'The Gemini AI service is temporarily experiencing high demand. Please retry in a few seconds.'
+          : `Failed to generate Gemini ecological summary: ${message}`;
+      res.status(502).json({ error: friendly });
     }
   });
 

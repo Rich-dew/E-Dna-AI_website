@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Moon, Sun, Menu, X } from 'lucide-react';
+import { motion, useReducedMotion, type Variants } from 'motion/react';
 import { Logo } from '../components/Logo';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
@@ -9,11 +10,70 @@ import { useToast } from '../context/ToastContext';
 const HERO_IMG = '/src/assets/images/hero_edna_sampling_1795608772472.jpg';
 const LAB_IMG = '/src/assets/images/lab_sequencing_bench_1795608769363.jpg';
 
+const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+const heroContainerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.09,
+      delayChildren: 0.04,
+    },
+  },
+};
+
+const heroFadeUpVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: EASE_OUT_EXPO,
+    },
+  },
+};
+
+const heroHeadingVariants: Variants = {
+  hidden: { opacity: 0, y: 26 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.68,
+      ease: EASE_OUT_EXPO,
+    },
+  },
+};
+
+const metricsContainerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.07,
+      delayChildren: 0.28,
+    },
+  },
+};
+
+const metricItemVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.52,
+      ease: EASE_OUT_EXPO,
+    },
+  },
+};
+
 export function LandingPage() {
   const { theme, toggleTheme } = useTheme();
   const { user, loginDemoResearcher } = useAuth();
   const { pushToast } = useToast();
   const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [heroImgFailed, setHeroImgFailed] = useState(false);
   const [labImgFailed, setLabImgFailed] = useState(false);
@@ -173,24 +233,41 @@ export function LandingPage() {
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-bio-grid opacity-70" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 lg:pt-20 lg:pb-24">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
-              <div className="lg:col-span-6 flex flex-col justify-center">
-                <div className="flex items-center gap-3 text-xs font-semibold tracking-[0.14em] text-[#1F8A72] dark:text-[#7ED6B5] mb-4">
+              <motion.div
+                className="lg:col-span-6 flex flex-col justify-center"
+                variants={heroContainerVariants}
+                initial={prefersReducedMotion ? false : 'hidden'}
+                animate="visible"
+              >
+                <motion.div
+                  variants={heroFadeUpVariants}
+                  className="flex items-center gap-3 text-xs font-semibold tracking-[0.14em] text-[#1F8A72] dark:text-[#7ED6B5] mb-4"
+                >
                   <span aria-hidden="true" className="h-[2px] w-7 bg-gradient-to-r from-[#0F4C4A] to-[#7ED6B5] rounded-full" />
                   <span>eDNA · TAXONOMY · BIODIVERSITY</span>
-                </div>
-                <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-[#0B2322] dark:text-[#FAF9F5] leading-[1.07] [text-wrap:balance]">
+                </motion.div>
+                <motion.h1
+                  variants={heroHeadingVariants}
+                  className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-[#0B2322] dark:text-[#FAF9F5] leading-[1.07] [text-wrap:balance]"
+                >
                   Calibrated taxonomy and biodiversity analytics from{' '}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F4C4A] via-[#1F8A72] to-[#2B9A86] dark:from-[#7ED6B5] dark:via-[#5BB6E8] dark:to-[#7ED6B5]">
                     environmental DNA.
                   </span>
-                </h1>
-                <p className="mt-5 text-base sm:text-lg text-[#3B5755] dark:text-[#A9C5C1] leading-relaxed max-w-xl">
+                </motion.h1>
+                <motion.p
+                  variants={heroFadeUpVariants}
+                  className="mt-5 text-base sm:text-lg text-[#3B5755] dark:text-[#A9C5C1] leading-relaxed max-w-xl"
+                >
                   Upload FASTA, FASTQ, or OTU/ASV tables from water, sediment, or soil samples. Run
                   quality filtering, chimera flagging, taxonomic classification with novel-taxon
                   detection, and spatial biodiversity analysis in one reproducible workspace.
-                </p>
+                </motion.p>
 
-                <div className="mt-8 flex flex-wrap items-center gap-3.5">
+                <motion.div
+                  variants={heroFadeUpVariants}
+                  className="mt-8 flex flex-wrap items-center gap-3.5"
+                >
                   <Link
                     to="/register"
                     className="inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-[#0F4C4A] to-[#176961] text-[#FAF9F5] shadow-md shadow-[#0F4C4A]/20 hover:from-[#145E5B] hover:to-[#1F8A72] hover:-translate-y-px dark:from-[#1F8A72] dark:to-[#27A085] whitespace-nowrap"
@@ -211,14 +288,22 @@ export function LandingPage() {
                   >
                     Explore sample dataset
                   </button>
-                </div>
+                </motion.div>
 
-                <p className="mt-6 text-xs text-[#4F6B68] dark:text-[#86A7A3]">
+                <motion.p
+                  variants={heroFadeUpVariants}
+                  className="mt-6 text-xs text-[#4F6B68] dark:text-[#86A7A3]"
+                >
                   Supports 12S · 16S · 18S · COI · ITS · rbcL marker panels · Up to 50 MB per sample
-                </p>
-              </div>
+                </motion.p>
+              </motion.div>
 
-              <div className="lg:col-span-6">
+              <motion.div
+                className="lg:col-span-6"
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 22, scale: 0.985 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.7, delay: 0.16, ease: EASE_OUT_EXPO }}
+              >
                 <div className="group relative h-full min-h-[300px] lg:min-h-[430px] rounded-2xl overflow-hidden border border-[#D8D5C8] dark:border-[#1E3B38] bg-[#0F4C4A] surface-card">
                   {!heroImgFailed ? (
                     <img
@@ -242,44 +327,61 @@ export function LandingPage() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Full-width 4-column quantitative anchor strip with subtle brand-spectrum top hairlines */}
-            <div className="mt-14 pt-8 grid grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="pt-4 border-t-2 border-[#0F4C4A] dark:border-[#7ED6B5]">
+            <motion.div
+              className="mt-14 pt-8 grid grid-cols-2 lg:grid-cols-4 gap-5"
+              variants={metricsContainerVariants}
+              initial={prefersReducedMotion ? false : 'hidden'}
+              animate="visible"
+            >
+              <motion.div
+                variants={metricItemVariants}
+                className="pt-4 border-t-2 border-[#0F4C4A] dark:border-[#7ED6B5]"
+              >
                 <div className="font-mono tabular-nums text-2xl sm:text-3xl font-semibold text-[#0F4C4A] dark:text-[#7ED6B5]">
                   6 Markers
                 </div>
                 <p className="text-sm text-[#435E5B] dark:text-[#9DBAB6] mt-1.5 leading-snug">
                   12S, 16S, 18S, COI, ITS, and rbcL barcode workflows
                 </p>
-              </div>
-              <div className="pt-4 border-t-2 border-[#1F8A72]">
+              </motion.div>
+              <motion.div
+                variants={metricItemVariants}
+                className="pt-4 border-t-2 border-[#1F8A72]"
+              >
                 <div className="font-mono tabular-nums text-2xl sm:text-3xl font-semibold text-[#176E5B] dark:text-[#7ED6B5]">
                   97% OTU / ASV
                 </div>
                 <p className="text-sm text-[#435E5B] dark:text-[#9DBAB6] mt-1.5 leading-snug">
                   Quality filtering, dereplication, and chimera screening
                 </p>
-              </div>
-              <div className="pt-4 border-t-2 border-[#5BB6E8]">
+              </motion.div>
+              <motion.div
+                variants={metricItemVariants}
+                className="pt-4 border-t-2 border-[#5BB6E8]"
+              >
                 <div className="font-mono tabular-nums text-2xl sm:text-3xl font-semibold text-[#1E6C96] dark:text-[#5BB6E8]">
                   5 Alpha Indices
                 </div>
                 <p className="text-sm text-[#435E5B] dark:text-[#9DBAB6] mt-1.5 leading-snug">
                   Richness, Shannon H&apos;, Simpson 1-D, Pielou J&apos;, and Chao1
                 </p>
-              </div>
-              <div className="pt-4 border-t-2 border-[#E8725A]">
+              </motion.div>
+              <motion.div
+                variants={metricItemVariants}
+                className="pt-4 border-t-2 border-[#E8725A]"
+              >
                 <div className="font-mono tabular-nums text-2xl sm:text-3xl font-semibold text-[#C24C34] dark:text-[#E8725A]">
                   Novel Flagging
                 </div>
                 <p className="text-sm text-[#435E5B] dark:text-[#9DBAB6] mt-1.5 leading-snug">
                   Calibrated thresholds separate confident calls from unknown taxa
                 </p>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
@@ -289,7 +391,13 @@ export function LandingPage() {
           className="border-t border-[#E3E0D5] dark:border-[#193331] bg-white dark:bg-[#0A1817] py-16 lg:py-24"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl">
+            <motion.div
+              className="max-w-2xl"
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
+            >
               <div className="text-xs font-semibold tracking-[0.12em] text-[#1F8A72] dark:text-[#7ED6B5] mb-2.5">
                 Workflow Architecture
               </div>
@@ -300,7 +408,7 @@ export function LandingPage() {
                 Every classification reports percent identity, confidence score, and reference gaps
                 so teams never over-claim species presence from sparse markers.
               </p>
-            </div>
+            </motion.div>
 
             <div
               id="pipeline"
@@ -388,7 +496,13 @@ export function LandingPage() {
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="rounded-2xl bg-deep-reef border border-[#1E6B64]/50 px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 text-[#FAF9F5] surface-card">
-              <div className="max-w-2xl">
+              <motion.div
+                className="max-w-2xl"
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
+              >
                 <div className="text-xs font-semibold tracking-[0.12em] text-[#7ED6B5] mb-2.5">
                   Ecological Synthesis &amp; Publication Exports
                 </div>
@@ -400,7 +514,7 @@ export function LandingPage() {
                   reference-database gaps, and primer bias, then export full CSV, JSON, or PDF
                   reports for collaborators and field regulators.
                 </p>
-              </div>
+              </motion.div>
               <div className="flex flex-wrap gap-3 shrink-0">
                 <Link
                   to="/register"
